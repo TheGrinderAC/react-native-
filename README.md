@@ -1,1 +1,1 @@
-# react-native-
+# react-native: rate-repository-app.
