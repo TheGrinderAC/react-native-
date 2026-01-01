@@ -1,5 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  FlatList,
+} from 'react-native';
 import React, { useState } from 'react';
 
 export default function App() {
@@ -8,18 +15,17 @@ export default function App() {
 
   const addTask = () => {
     if (inputValue.trim().length > 0) {
-      setTasks(prevTasks => [
+      setTasks((prevTasks) => [
         ...prevTasks,
-        { id: Date.now().toString(), text: inputValue }
+        { id: Date.now().toString(), text: inputValue },
       ]);
       setInputValue('');
     }
   };
 
   const removeTask = (id) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My To-Do App</Text>
@@ -35,7 +41,7 @@ export default function App() {
       <FlatList
         style={styles.list}
         data={tasks}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.taskItem}>
             <Text style={styles.taskText}>{item.text}</Text>
@@ -50,6 +56,7 @@ export default function App() {
           <Text style={styles.empty}>No tasks yet. Start by adding one!</Text>
         }
       />
+
       <StatusBar style="auto" />
     </View>
   );
