@@ -52,8 +52,12 @@ const RepositoryItemHeader = ({ item }) => (
   <View style={styles.headerContainer}>
     <Image style={styles.avatar} source={{ uri: item.ownerAvatarUrl }} />
     <View style={styles.headerTextContainer}>
-      <Text fontSize="heading" fontWeight="bold">{item.fullName}</Text>
-      <Text color="textSecondary" style={styles.description}>{item.description}</Text>
+      <Text fontSize="heading" fontWeight="bold">
+        {item.fullName}
+      </Text>
+      <Text color="textSecondary" style={styles.description}>
+        {item.description}
+      </Text>
       <Text style={styles.language}>{item.language}</Text>
     </View>
   </View>
