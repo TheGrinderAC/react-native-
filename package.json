@@ -1,8 +1,10 @@
 {
   "name": "rate-repository-app",
   "version": "1.0.0",
+  "type": "commonjs",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "postinstall": "patch-package",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -13,10 +15,14 @@
     "format:check": "prettier --check \"**/*.{js,jsx,json,md}\""
   },
   "dependencies": {
+    "@apollo/client": "^3.11.0",
+    "@expo/metro-config": "0.17.8",
     "@expo/metro-runtime": "~6.1.2",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "expo": "^54.0.30",
     "expo-status-bar": "~3.0.9",
     "formik": "^2.4.9",
+    "graphql": "^16.12.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
@@ -31,6 +37,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-native": "^5.0.0",
+    "patch-package": "^8.0.1",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.7.4"
   },
   "private": true
