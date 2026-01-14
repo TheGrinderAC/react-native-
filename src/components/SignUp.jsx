@@ -3,7 +3,9 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-native';
 import * as yup from 'yup';
+import { useMutation } from '@apollo/client';
 import Text from './Text';
+import { CREATE_USER } from '../graphql/mutations';
 import useSignIn from '../hooks/useSignIn';
 
 const styles = StyleSheet.create({
@@ -27,8 +29,20 @@ const styles = StyleSheet.create({
 });
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required('Username is required'),
-  password: yup.string().required('Password is required'),
+  username: yup
+    .string()
+    .required('Username is required')
+    .min(5, 'Username must be at least 5 characters')
+    .max(30, 'Username must be at most 30 characters'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(5, 'Password must be at least 5 characters')
+    .max(50, 'Password must be at most 50 characters'),
+  passwordConfirmation: yup
+    .string()
+    .required('Password confirmation is required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 const FormikTextInput = ({ name, ...props }) => {
@@ -50,11 +64,15 @@ const FormikTextInput = ({ name, ...props }) => {
   );
 };
 
-export const SignInForm = ({ onSubmit }) => {
+export const SignUpForm = ({ onSubmit }) => {
   return (
     <View style={styles.container}>
       <Formik
-        initialValues={{ username: '', password: '' }}
+        initialValues={{
+          username: '',
+          password: '',
+          passwordConfirmation: '',
+        }}
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
@@ -71,7 +89,13 @@ export const SignInForm = ({ onSubmit }) => {
               secureTextEntry
               formik={formik}
             />
-            <Button onPress={formik.handleSubmit} title="Sign in" />
+            <FormikTextInput
+              name="passwordConfirmation"
+              placeholder="Password confirmation"
+              secureTextEntry
+              formik={formik}
+            />
+            <Button onPress={formik.handleSubmit} title="Sign up" />
           </View>
         )}
       </Formik>
@@ -79,7 +103,8 @@ export const SignInForm = ({ onSubmit }) => {
   );
 };
 
-const SignIn = () => {
+const SignUp = () => {
+  const [createUser] = useMutation(CREATE_USER);
   const [signIn] = useSignIn();
   const navigate = useNavigate();
 
@@ -87,19 +112,29 @@ const SignIn = () => {
     const { username, password } = values;
 
     try {
-      const { data } = await signIn({ username, password });
-      console.log(username, password);
+      // First, create the user
+      await createUser({
+        variables: {
+          user: {
+            username,
+            password,
+          },
+        },
+      });
 
-      // Redirect to home page after successful sign-in
+      // Then sign in the newly created user
+      const { data } = await signIn({ username, password });
+
+      // Redirect to home page after successful sign-up and sign-in
       if (data?.authenticate) {
         navigate('/');
       }
     } catch (e) {
-      console.log(e);
+      console.log('Error during sign up:', e);
     }
   };
 
-  return <SignInForm onSubmit={onSubmit} />;
+  return <SignUpForm onSubmit={onSubmit} />;
 };
 
-export default SignIn;
+export default SignUp;
